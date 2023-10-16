@@ -39,7 +39,7 @@ func main() {
  
 	_ = router.Run(":60000")
 }
- 
+
 // 初始化prometheus
 func init() {
 	httpRequestDurationVec = prometheus.NewHistogramVec(prometheus.HistogramOpts{
@@ -55,7 +55,7 @@ func init() {
  
 	prometheus.MustRegister(httpRequestDurationVec, httpRequestCountVec)
 }
- 
+
 // 统一处理函数
 func CommonControl(ctx *gin.Context) {
 	time.Sleep(time.Duration(ran.Intn(100)) * time.Millisecond)
@@ -80,7 +80,7 @@ func Middleware(ctx *gin.Context) {
 	// 添加指标
 	httpRequestDurationVec.WithLabelValues(labels...).Observe(duration)
 	httpRequestCountVec.WithLabelValues(statusCode, ctx.Request.Method).Inc()
-	fmt.Printf("code: %d | method: %s | path: %s | duration: %f\n ", statusCode, ctx.Request.Method, ctx.Request.URL.Path, duration)
+	fmt.Printf("code: %s | method: %s | path: %s | duration: %f\n ", statusCode, ctx.Request.Method, ctx.Request.URL.Path, duration)
 }
 
 // http metrics 指标页面，配置给prometheus

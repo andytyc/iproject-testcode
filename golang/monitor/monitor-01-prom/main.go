@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"flag"
 )
 
 var (
@@ -20,6 +21,8 @@ var (
 	httpRequestCountVec *prometheus.CounterVec
 	// DefaultBuckets prometheus buckets in seconds.
 	DefaultBuckets = []float64{0.1, 0.3, 0.5, 1.0, 3.0, 5.0}
+	// http端口
+	httpRunPort string
 )
 
 func main() {
@@ -37,11 +40,14 @@ func main() {
 		apiGroup.GET("/E", CommonControl)
 	}
  
-	_ = router.Run(":60000")
+	_ = router.Run(":"+httpRunPort)
 }
 
 // 初始化prometheus
 func init() {
+	flag.StringVar(&httpRunPort, "port", "60000", "port of http server run")
+	flag.Parse()
+
 	httpRequestDurationVec = prometheus.NewHistogramVec(prometheus.HistogramOpts{
 		Name:    "http_server_requests_seconds",
 		Help:    "How long it took to process the HTTP request, partitioned by status code, method and HTTP path.",
